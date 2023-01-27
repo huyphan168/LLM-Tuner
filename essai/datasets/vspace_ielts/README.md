@@ -4,13 +4,16 @@
 Dataset             | Use Case
 ---------------------------------------     | ---------------------------------------------------
 rewritten essays               | Given a topic and a student essay, rewritten the essay with higher quality
+explain changes                | Given 2 sentences, one of original essay, one of the rewritten essay -> give explaination of the changes between them
 coherence                      | Given a topic and a student essay, give coherence summary of the essay
 vocab                          | Given a topic and a student essay, give vocabulary review of the essay and give alternative words
+band prediction                | Given a topic and a student essay -> give band prediction of the essay (0->9)
+Examiner Comment               | Given a topic and a studen essay -> give IELTS Examiner Comment of the essay <few-shot tuning on APIs>
 
 ## Dataset Description
 
-This data was created by providing rewritten version of draft IELTS essays of the students.
-
+This data was created by providing rewritten version of draft IELTS essays of the students. 
+We collect IELTS Examiner Comments of variety of examinee essays to tune the OpenAI APIs for this specific task.
 Example:
 
 ```
