@@ -1,0 +1,45 @@
+## Meta Configs for Essai
+meta:
+  name: t5-instruct-3b
+  description: T5 model with instructive prompts
+  model_argument: NI
+  dataset_argument: NI
+  training_argument: NI
+  data_file: essai/datasets/natural_instructions/ni_dataset.py
+## Huggingface Configs
+run_name: t5-experiment
+deepspeed: essai/ds_configs/stage2.config
+do_train: True
+do_predict: True
+predict_with_generate: True
+model_name_or_path: google/t5-xl-lm-adapt
+max_source_length: 1024
+max_target_length: 128
+generation_max_length: 128
+max_num_instances_per_task: 100
+max_num_instances_per_eval_task: 100
+add_task_name: False
+add_task_definition: True
+num_pos_examples: 2
+num_neg_examples: 0
+add_explanation: False
+tk_instruct: False
+data_dir: data/splits/default
+task_dir: data/tasks
+output_dir: output/
+overwrite_output_dir: True
+cache_dir: ./cache/
+overwrite_cache: True
+per_device_train_batch_size: 1
+per_device_eval_batch_size: 2
+gradient_accumulation_steps: 2
+learning_rate: 5e-05
+num_train_epochs: 2
+lr_scheduler_type: constant
+warmup_steps: 0
+logging_strategy: steps
+logging_steps: 500
+evaluation_strategy: no
+save_strategy: steps
+save_steps: 2500
+bf16: True

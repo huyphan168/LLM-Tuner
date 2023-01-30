@@ -3,8 +3,8 @@ LehrerAI Language Model Team
 
 ## To do:
 - [x] Refactor Tk-instruct code
-- [ ] Refactor `essai/train.py` to disengage arguments, Natural Instruction code Interaction for universality (include GPT-like or OPT models) steps: <Trainer, Dataset, Arguments(use Config instead)>
-- [ ] Refactor `essai/trainer` to include more training code
+- [x] Refactor `essai/train.py` to disengage arguments, Natural Instruction code Interaction for universality (include GPT-like or OPT models) steps: <Trainer, Dataset, Arguments(use Config instead)>
+- [x] Refactor `essai/trainer` to include more training code
 - [ ] Implement Flan-T5, GPT-like models fine-tuning code
 - [ ] Equip repo with CollosalAI code instead of only DeepSpeed for better converage of distributed training algorithms
 - [ ] Collect data from books `essai/datasets/vspace_ielts/collect_books.py`
@@ -16,60 +16,68 @@ python3 -r requirements.txt
 ```
 
 ## Usage
-This implementation is fairly simple to use. With a user specificed configuration file, `main.py` will do anything else. The configuration file consists of 2 parts: 
-`task` to handle problem-specific parameters and `model` to handle model-specific parameters. For example, the configuration file for DeepThinking on Mazes dataset is as follows.
+Essai is modular and flexible. It is easy to add new tasks, models, and algorithms. On top of different repo or codebase of different algorithms is Meta Essai Configs to choose which algorithm to use.
 
 ```yaml
-seed: 0
-task: 
-    task_type: mazes # (for general task, in future may be more useful)
-    dataset: mazes
-    batch_size: 40
-    num_workers: 4
-    num_epochs: 100
-    lr: 0.001
-    weight_decay: 0.0001
-    log_interval: 100
-    save_interval: 1000
-    save_dir: ./checkpoints/dt_mazes
-    device: cuda
-model:
-    architecture: deepthinking
-    backbone:
-        backbone_type: deepthinking2d
-        in_channels: 3
-        width: 128
-    recurrence:
-        recur_type: deepthinking2d
-        num_blocks: [2]
-        group_norm: False
-        in_channels: 128
-        width: 128
-        max_iter_fwd: 30
-    decoder:
-        decoder_type: deepthinking2d
-        width: 128
+## Meta Configs for Essai
+meta:
+  name: t5-instruct-3b
+  description: T5 model with instructive prompts
+  model_argument: NI
+  dataset_argument: NI
+  training_argument: NI
+  data_file: essai/datasets/natural_instructions/ni_dataset.py
+## Huggingface Configs
+run_name: t5-experiment
+deepspeed: essai/ds_configs/stage2.config
+do_train: True
+do_predict: True
+predict_with_generate: True
+model_name_or_path: google/t5-xl-lm-adapt
+max_source_length: 1024
+save_strategy: steps
+save_steps: 2500
+bf16: True
+...
 ```
-To reconstruct the results in the paper of DeepThinking without Overthinking with Mazes dataset, just run
+To reconstruct the results in Tk-instruct, just run
 ```
-python3 main.py --cfg configs/deepthinking_mazes.yaml --output-path results/dt2d_mazes
+deepspeed --master_port $(shuf -i25000-30000 -n1) essai/train.py essau/configs/t5_instruct_3b.yaml
 ```
 ## Code Files
 This repository provides the following Folders and Files
-- `configs/` : Configuration files for different tasks.
-- `results/` : Folder to save results.
-- `scripts/` : Folder to save scripts for running on cluster or experiments.
-- `main.py` : Main file to run the code.
-- `evaluation.py`: Evaluation file to evaluate the model depends on user specificed tasks.
-- `src/backbones` : Implementation of different backbones including DVAE, ResNet, projectConV for feature extraction.
-- `src/data` : Implementation of CLEVR, Mazes, Chess, Graphs
-- `src/utils.py` : Implementation of some useful functions.
-- `src/decoder.py`: Implementation of decoder for needed tasks.
-- `src/tasks.py`: TaskExecutor class to run modules specificed by certain problems including computing metrics, losses or preprocess data.
-- `src/model.py` : Implementation of Main models including DEQ, DeepThinking, RIM, DynamicMoEC
-
-
+- `essai`: The main folder for the codebase
+  - `arguments`: The folder for the arguments classes
+  - `configs`: The folder for the configuration files
+  - `datasets`: The folder for the dataset Folders
+    - `natural_instructions`: The folder for the Natural Instruction dataset
+    - `vspace_ielts`: The folder for the Vspace IELTS dataset
+  - `trainers`: The folder for the trainer files for different algorithms
+  - `inference`: The folder for the inference server using EnergonAI + Quantization Strategies
+  - `ds_configs`: The folder for the deepspeed configuration files
+  - `train.py`: The main file for training
+- `notebooks`: The folder for the notebooks
+- `scripts`: The folder for the bash scripts
+- `requirements.txt`: The file for the dependencies
+- `README.md`: The file for the README
 ## Citation
 ```bibtex
+@misc{https://doi.org/10.48550/arxiv.2204.07705,
+  doi = {10.48550/ARXIV.2204.07705},
+  
+  url = {https://arxiv.org/abs/2204.07705},
+  
+  author = {Wang, Yizhong and Mishra, Swaroop and Alipoormolabashi, Pegah and Kordi, Yeganeh and Mirzaei, Amirreza and Arunkumar, Anjana and Ashok, Arjun and Dhanasekaran, Arut Selvan and Naik, Atharva and Stap, David and Pathak, Eshaan and Karamanolakis, Giannis and Lai, Haizhi Gary and Purohit, Ishan and Mondal, Ishani and Anderson, Jacob and Kuznia, Kirby and Doshi, Krima and Patel, Maitreya and Pal, Kuntal Kumar and Moradshahi, Mehrad and Parmar, Mihir and Purohit, Mirali and Varshney, Neeraj and Kaza, Phani Rohitha and Verma, Pulkit and Puri, Ravsehaj Singh and Karia, Rushang and Sampat, Shailaja Keyur and Doshi, Savan and Mishra, Siddhartha and Reddy, Sujan and Patro, Sumanta and Dixit, Tanay and Shen, Xudong and Baral, Chitta and Choi, Yejin and Smith, Noah A. and Hajishirzi, Hannaneh and Khashabi, Daniel},
+  
+  keywords = {Computation and Language (cs.CL), Artificial Intelligence (cs.AI), FOS: Computer and information sciences, FOS: Computer and information sciences},
+  
+  title = {Super-NaturalInstructions: Generalization via Declarative Instructions on 1600+ NLP Tasks},
+  
+  publisher = {arXiv},
+  
+  year = {2022},
+  
+  copyright = {Creative Commons Attribution 4.0 International}
+}
 
 ```
