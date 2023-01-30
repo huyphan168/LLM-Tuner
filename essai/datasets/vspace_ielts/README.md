@@ -3,6 +3,7 @@
 ## Dataset cards for different instructions
 Dataset             | Use Case
 ---------------------------------------     | ---------------------------------------------------
+essay generation               | Given a topic, generate an essay with high quality essay  
 rewritten essays               | Given a topic and a student essay, rewritten the essay with higher quality
 explain changes                | Given 2 sentences, one of original essay, one of the rewritten essay -> give explaination of the changes between them
 coherence                      | Given a topic and a student essay, give coherence summary of the essay

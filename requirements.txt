@@ -1,3 +1,5 @@
+deepspeed==0.6.6
 accelerate
 sentencepiece
 transformers
+datasets
