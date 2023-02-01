@@ -6,7 +6,7 @@ LehrerAI Language Model Team
 - [x] Refactor `essai/train.py` to disengage arguments, Natural Instruction code Interaction for universality (include GPT-like or OPT models) steps: <Trainer, Dataset, Arguments(use Config instead)>
 - [x] Refactor `essai/trainer` to include more training code
 - [ ] Implement Flan-T5, GPT-like models fine-tuning code
-- [ ] Equip repo with CollosalAI code instead of only DeepSpeed for better converage of distributed training algorithms
+- [ ] Equip repo with Accelerate Huggingface code instead of only DeepSpeed for better converage of distributed training algorithms (Requires to change trainer)
 - [ ] Collect data from books `essai/datasets/vspace_ielts/collect_books.py`
 
 ## Installation

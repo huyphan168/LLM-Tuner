@@ -42,4 +42,4 @@ logging_steps: 500
 evaluation_strategy: no
 save_strategy: steps
 save_steps: 2500
-bf16: True
+bf16: False

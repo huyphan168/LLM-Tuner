@@ -107,7 +107,7 @@ def main():
     # Set seed before initializing model.
     set_seed(training_args.seed)
 
-    # Get the NaturalInstructions dataset
+    # Get the dataset
     raw_datasets = load_dataset(
         omega_config.meta.data_file, 
         data_dir=data_args.data_dir, 
@@ -191,6 +191,7 @@ def main():
             f"`{model.__class__.__name__}`. This will lead to loss being calculated twice and will take up more memory"
         )
 
+    # Data se
     if training_args.do_train:
         if "train" not in raw_datasets:
             raise ValueError("--do_train requires a train dataset")
@@ -214,14 +215,10 @@ def main():
 
     # Data collator
     data_collator = build_collator(omega_config, tokenizer, data_args, training_args, model)
-
-    # we don't want to remove unused columns because we will prepare each batch during training, 
-    # and some of the information will aslo be used in evaluation.
     training_args.remove_unused_columns = False 
 
-    # Initialize our Trainer
+    # Trainer
     trainer = build_trainer(omega_config, model, training_args, train_dataset, eval_dataset, tokenizer, data_collator)
-
     all_metrics = {"run_name": training_args.run_name}
 
     # Training
