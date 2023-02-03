@@ -119,6 +119,9 @@ class NIDataArguments:
         default=False,
         metadata={"help": "tk_instruct will train a model combining all valid instruction encodings. This will overwrite the other settings about instruction encoding."} 
     )
+    data_file: Optional[str] = field(
+        default=None, metadata={"help": "data file containing implementation of the data class"}
+    )
     
     def __post_init__(self):
         pass

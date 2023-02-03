@@ -1,2 +1,4 @@
 .vscode-upload.json
 output/
+data/
+cache/

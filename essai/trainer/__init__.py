@@ -1,11 +1,11 @@
 from essai.trainer.ni_trainer import NITrainer, DenserEvalCallback
-from essai.datasets.compute_metrics import compute_metrics, compute_grouped_metrics
+from essai.dataset.compute_metrics import compute_metrics, compute_grouped_metrics
 import numpy as np
 import os
 import json
 
 def build_trainer(config, model, training_args, train_dataset, eval_dataset, tokenizer, data_collator):
-    if config.meta.training_argument == "NI":
+    if config.training_argument == "NI":
 
         def compute_ni_metrics(dataset, preds, save_prefix=None):
             decoded_preds = tokenizer.batch_decode(preds, skip_special_tokens=True)
