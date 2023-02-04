@@ -58,7 +58,7 @@ except (LookupError, OSError):
 MULTILINGUAL_TOKENIZERS = [MBartTokenizer, MBartTokenizerFast, MBart50Tokenizer, MBart50TokenizerFast]
 
 def main():
-    deepspeed.ops.op_builder.CPUAdamBuilder().load()
+    # deepspeed.ops.op_builder.CPUAdamBuilder().load()
     #Meta Config controlling which argument classes are used for the HFparser
     omega_config = OmegaConf.load(os.path.abspath(sys.argv[2]))
 
