@@ -1,5 +1,5 @@
 torch
-deepspeed
+deepspeed==0.7.7
 accelerate
 sentencepiece
 transformers
