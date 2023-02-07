@@ -6,8 +6,8 @@ LehrerAI Language Model Team
 - [x] Refactor `essai/train.py` to disengage arguments, Natural Instruction code Interaction for universality (include GPT-like or OPT models) steps: <Trainer, Dataset, Arguments(use Config instead)>
 - [x] Refactor `essai/trainer` to include more training code
 - [ ] Implement Flan-T5, GPT-like models fine-tuning code
-- [ ] Equip repo with Accelerate Huggingface code instead of only DeepSpeed for better converage of distributed training algorithms (Requires to change trainer)
 - [ ] Collect data from books `essai/datasets/vspace_ielts/collect_books.py`
+- [ ] Implement Triton fused kernel + torch.compile
 
 ## Installation
 Current version of implementation has tested with pytorch 2.0 but it should work with pytorch > 1.0.0. To install all dependencies, just run.
@@ -20,20 +20,19 @@ Essai is modular and flexible. It is easy to add new tasks, models, and algorith
 
 ```yaml
 ## Meta Configs for Essai
-meta:
-  name: t5-instruct-3b
-  description: T5 model with instructive prompts
-  model_argument: NI
-  dataset_argument: NI
-  training_argument: NI
-  data_file: essai/datasets/natural_instructions/ni_dataset.py
+name: t5-instruct-3b
+description: T5 model with instructive prompts
+model_argument: NI
+dataset_argument: NI
+training_argument: NI
 ## Huggingface Configs
 run_name: t5-experiment
-deepspeed: essai/ds_configs/stage2.config
+deepspeed: essai/ds_configs/stage3.config
 do_train: True
 do_predict: True
 predict_with_generate: True
 model_name_or_path: google/t5-xl-lm-adapt
+data_file: essai/datasets/natural_instructions/ni_dataset.py
 max_source_length: 1024
 save_strategy: steps
 save_steps: 2500

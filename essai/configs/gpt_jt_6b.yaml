@@ -1,17 +1,17 @@
 ## Meta Configs for Essai
-name: t5-instruct-3b
-description: T5 model with instructive prompts
+name: gpt-jt-6b
+description: gpt-j model with instructive prompts
 model_argument: NI
 dataset_argument: NI
 training_argument: NI
 ## Huggingface Configs
-run_name: t5-experiment
+run_name: gpt-jt-experiment
 deepspeed: essai/ds_configs/stage3.config
 do_train: True
 do_predict: True
 do_eval: True
 predict_with_generate: True
-model_name_or_path: allenai/tk-instruct-3b-def-pos
+model_name_or_path: "togethercomputer/GPT-JT-6B-v1"
 max_source_length: 512
 max_target_length: 512
 generation_max_length: 512
@@ -26,9 +26,8 @@ add_explanation: False
 tk_instruct: False
 data_dir: data/splits/default
 task_dir: data/tasks
-output_dir: output/
+output_dir: output/gpt-jt-experiment
 overwrite_output_dir: True
-# cache_dir: ./cache/
 overwrite_cache: True
 per_device_train_batch_size: 1
 per_device_eval_batch_size: 2
