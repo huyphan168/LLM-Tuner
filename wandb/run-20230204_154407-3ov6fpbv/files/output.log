@@ -1,6 +1,0 @@
-  0%|                                                                                                                                                                                                                                 | 0/450 [00:00<?, ?it/s]/home/ubuntu/miniconda3/envs/colbert/lib/python3.8/site-packages/transformers/tokenization_utils_base.py:3581: UserWarning: `as_target_tokenizer` is deprecated and will be removed in v5 of Transformers. You can tokenize your labels by using the argument `text_target` of the regular `__call__` method (either in the same call as your input texts if you use the same keyword arguments, or in a separate call.
-  warnings.warn(
-/home/ubuntu/miniconda3/envs/colbert/lib/python3.8/site-packages/torch/distributed/distributed_c10d.py:2387: UserWarning: torch.distributed._all_gather_base is a private function and will be deprecated. Please use torch.distributed.all_gather_into_tensor instead.
-  warnings.warn(
-/home/ubuntu/miniconda3/envs/colbert/lib/python3.8/site-packages/torch/distributed/distributed_c10d.py:2849: UserWarning: torch.distributed._reduce_scatter_base is a private function and will be deprecated. Please use torch.distributed.reduce_scatter_tensor instead.
-  warnings.warn(

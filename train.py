@@ -7,37 +7,26 @@ import logging
 import os
 import sys
 import json
-from dataclasses import dataclass, field
-from typing import Optional
 from omegaconf import OmegaConf
 
 import datasets
 import nltk  # Here to have a nice missing dependency error message early on
 import numpy as np
-from datasets import load_dataset, load_metric
 
-import deepspeed
 import transformers
 from filelock import FileLock
 from transformers import (
     AutoConfig,
     AutoModelForSeq2SeqLM,
     AutoTokenizer,
-    DataCollatorForSeq2Seq,
     HfArgumentParser,
-    MBart50Tokenizer,
-    MBart50TokenizerFast,
-    MBartTokenizer,
-    MBartTokenizerFast,
-    Seq2SeqTrainer,
-    Seq2SeqTrainingArguments,
     set_seed,
 )
 from transformers.file_utils import is_offline_mode
 from transformers.trainer_utils import get_last_checkpoint
 
 from essai.arguments import build_arguments
-from essai.dataset import build_collator
+from essai.dataset import build_dataset
 from essai.trainer import build_trainer
 
 # set_progress_bar_enabled(False)
@@ -53,9 +42,6 @@ except (LookupError, OSError):
         )
     with FileLock(".lock") as lock:
         nltk.download("punkt", quiet=True)
-
-# A list of all multilingual tokenizer which require lang attribute.
-MULTILINGUAL_TOKENIZERS = [MBartTokenizer, MBartTokenizerFast, MBart50Tokenizer, MBart50TokenizerFast]
 
 def main():
     # deepspeed.ops.op_builder.CPUAdamBuilder().load()
@@ -109,16 +95,6 @@ def main():
     # Set seed before initializing model.
     set_seed(training_args.seed)
 
-    # Get the dataset
-    raw_datasets = load_dataset(
-        data_args.data_file, 
-        data_dir=data_args.data_dir, 
-        task_dir=data_args.task_dir, 
-        cache_dir=model_args.cache_dir,
-        max_num_instances_per_task=data_args.max_num_instances_per_task,
-        max_num_instances_per_eval_task=data_args.max_num_instances_per_eval_task
-    )
-
     config = AutoConfig.from_pretrained(
         model_args.config_name if model_args.config_name else model_args.model_name_or_path,
         cache_dir=model_args.cache_dir,
@@ -143,11 +119,6 @@ def main():
 
     model.resize_token_embeddings(len(tokenizer))
 
-    if model.config.decoder_start_token_id is None and isinstance(tokenizer, (MBartTokenizer, MBartTokenizerFast)):
-        if isinstance(tokenizer, MBartTokenizer):
-            model.config.decoder_start_token_id = tokenizer.lang_code_to_id[data_args.lang]
-        else:
-            model.config.decoder_start_token_id = tokenizer.convert_tokens_to_ids(data_args.lang)
 
     if model.config.decoder_start_token_id is None:
         raise ValueError("Make sure that `config.decoder_start_token_id` is correctly defined")
@@ -171,29 +142,15 @@ def main():
                 "resize the model's position encodings by passing `--resize_position_embeddings`."
             )
 
-    if isinstance(tokenizer, tuple(MULTILINGUAL_TOKENIZERS)):
-        assert (
-            data_args.lang is not None
-        ), f"{tokenizer.__class__.__name__} is a multilingual tokenizer which requires --lang argument"
-
-        tokenizer.src_lang = data_args.lang
-        tokenizer.tgt_lang = data_args.lang
-
-        # For multilingual translation models like mBART-50 and M2M100 we need to force the target language token
-        # as the first generated token. We ask the user to explicitly provide this as --forced_bos_token argument.
-        forced_bos_token_id = (
-            tokenizer.lang_code_to_id[data_args.forced_bos_token] if data_args.forced_bos_token is not None else None
-        )
-        model.config.forced_bos_token_id = forced_bos_token_id
-
-
     if training_args.label_smoothing_factor > 0 and not hasattr(model, "prepare_decoder_input_ids_from_labels"):
         logger.warning(
             "label_smoothing is enabled but the `prepare_decoder_input_ids_from_labels` method is not defined for"
             f"`{model.__class__.__name__}`. This will lead to loss being calculated twice and will take up more memory"
         )
 
-    # Data se
+    data_collator, raw_datasets = build_dataset(meta_args, tokenizer, data_args, training_args, model_args, model)
+
+    # Data set
     if training_args.do_train:
         if "train" not in raw_datasets:
             raise ValueError("--do_train requires a train dataset")
@@ -215,12 +172,10 @@ def main():
         if data_args.max_predict_samples is not None:
             predict_dataset = predict_dataset.select(range(data_args.max_predict_samples))
 
-    # Data collator
-    data_collator = build_collator(omega_config, tokenizer, data_args, training_args, model)
     training_args.remove_unused_columns = False 
 
     # Trainer
-    trainer = build_trainer(omega_config, model, training_args, train_dataset, eval_dataset, tokenizer, data_collator)
+    trainer = build_trainer(meta_args, model, training_args, train_dataset, eval_dataset, tokenizer, data_collator)
     all_metrics = {"run_name": training_args.run_name}
 
     # Training

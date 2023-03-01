@@ -1,5 +1,5 @@
 .vscode-upload.json
-output/
-data/
-cache/
-wandb/
+output/*
+data/*
+cache/*
+wandb/*

@@ -1,39 +1,32 @@
 ## Meta Configs for Essai
-name: gpt-jt-6b
-description: gpt-j model with instructive prompts
+name: t5-instruct-3b
+description: T5 model with instructive prompts
 model_argument: NI
 dataset_argument: NI
 training_argument: NI
 ## Huggingface Configs
-run_name: gpt-jt-experiment
+run_name: tk-instruct-experiment-eduqg
 deepspeed: essai/ds_configs/stage3.config
 do_train: True
 do_predict: True
 do_eval: True
 predict_with_generate: True
-model_name_or_path: "EleutherAI/gpt-j-6B"
+model_name_or_path: allenai/tk-instruct-3b-def-pos
 max_source_length: 512
-max_target_length: 512
-generation_max_length: 512
-max_num_instances_per_task: 100
-max_num_instances_per_eval_task: 100
+max_target_length: 256
+generation_max_length: 256
 data_file: "essai/dataset/natural_instructions/ni_dataset.py"
-add_task_name: False
-add_task_definition: True
-num_pos_examples: 2
-num_neg_examples: 0
-add_explanation: False
-tk_instruct: False
-data_dir: data/splits/default
-task_dir: data/tasks
-output_dir: output/gpt-jt-experiment
+data_dir: data/eduqg/splits/defaults
+task_dir: data/eduqg/tasks
+output_dir: output/eduqg_tk_instruct_3b
 overwrite_output_dir: True
+# cache_dir: ./cache/
 overwrite_cache: True
-per_device_train_batch_size: 1
+per_device_train_batch_size: 2
 per_device_eval_batch_size: 2
 gradient_accumulation_steps: 4
 learning_rate: 5.0e-5
-num_train_epochs: 2
+num_train_epochs: 3
 lr_scheduler_type: constant
 warmup_steps: 0
 logging_strategy: steps

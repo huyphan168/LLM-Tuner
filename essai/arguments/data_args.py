@@ -125,3 +125,51 @@ class NIDataArguments:
     
     def __post_init__(self):
         pass
+
+class EduQGDArguments:
+    """
+    Arguments pertaining to what data we are going to input our model for training and eval.
+    """
+    lang: str = field(default=None, metadata={"help": "Language id for multilingual model."})
+    data_dir: str = field(
+        default=None, metadata={"help": "The directory for saving the EduQGD train/dev/test splits."}
+    )
+    task_dir: str = field(
+        default=None, metadata={"help": "The directory for saving the EduQGD tasks json files."}
+    )
+    overwrite_cache: bool = field(
+        default=False, metadata={"help": "Overwrite the cached training and evaluation sets"}
+    )
+    preprocessing_num_workers: Optional[int] = field(
+        default=None,
+        metadata={"help": "The number of processes to use for the preprocessing."},
+    )
+    max_source_length: Optional[int] = field(
+        default=1024,
+        metadata={
+            "help": "The maximum total input sequence length after tokenization. Sequences longer "
+            "than this will be truncated, sequences shorter will be padded."
+        },
+    )
+    max_target_length: Optional[int] = field(
+        default=128,
+        metadata={
+            "help": "The maximum total sequence length for target text after tokenization. Sequences longer "
+            "than this will be truncated, sequences shorter will be padded."
+        },
+    )
+    pad_to_max_length: bool = field(
+        default=False,
+        metadata={
+            "help": "Whether to pad all samples to model maximum sentence length. "
+            "If False, will pad the samples dynamically when batching to the maximum length in the batch. More "
+            "efficient on GPU but very bad for TPU."
+        },
+    )
+    max_train_samples: Optional[int] = field(
+        default=None,
+        metadata={
+            "help": "For debugging purposes or quicker training, truncate the number of training examples to this "
+            "value if set."
+        },
+    )
