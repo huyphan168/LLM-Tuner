@@ -245,12 +245,12 @@ class NITrainer(Seq2SeqTrainer):
             "synced_gpus": True if is_deepspeed_zero3_enabled() else False,
         }
         
-        if not hasattr(self, "_max_length"):
+        if hasattr(self, "_max_length"):
             gen_kwargs["max_length"] = self._max_length
         else:
             gen_kwargs["max_length"] = self.model.config.max_length
         
-        if not hasattr(self, "_num_beams"):
+        if hasattr(self, "_num_beams"):
             gen_kwargs["num_beams"] = self._num_beams
         else:
             gen_kwargs["num_beams"] = self.model.config.num_beams
