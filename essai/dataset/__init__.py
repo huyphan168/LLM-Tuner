@@ -3,7 +3,7 @@ dataset builder
 """
 from datasets import load_dataset
 from essai.dataset.natural_instructions.ni_collator import DataCollatorForNI
-from essai.dataset.EduQG.eduqg_collator import DataCollatorForEduQG 
+from essai.dataset.flan.flan_collator import DataCollatorForFlan
 
 def build_dataset(config, tokenizer, data_args, training_args, model_args, model):
     if config.dataset_argument == "NI":
@@ -32,7 +32,7 @@ def build_dataset(config, tokenizer, data_args, training_args, model_args, model
             max_num_instances_per_eval_task=data_args.max_num_instances_per_eval_task
         )
     elif config.dataset_argument == "NLG":
-        data_collator = DataCollatorForEduQG(
+        data_collator = DataCollatorForFlan(
                         tokenizer,
                         model=model,
                         padding="max_length" if data_args.pad_to_max_length else "longest",

@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
-class DataCollatorForEduQG:
+class DataCollatorForFlan:
 
     tokenizer: PreTrainedTokenizerBase
     model: Optional[Any] = None
