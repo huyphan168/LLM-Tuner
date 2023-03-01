@@ -1,0 +1,38 @@
+## Meta Configs for Essai
+name: t5-instruct-3b
+description: T5 model with instructive prompts
+model_argument: NI
+dataset_argument: NI
+training_argument: NI
+peft: True
+## Huggingface Configs
+run_name: tk-instruct-experiment-eduqg
+deepspeed: essai/ds_configs/stage3.config
+do_train: True
+do_predict: True
+do_eval: True
+predict_with_generate: True
+model_name_or_path: allenai/tk-instruct-3b-def-pos
+max_source_length: 748
+max_target_length: 256
+generation_max_length: 256
+data_file: "essai/dataset/natural_instructions/ni_dataset.py"
+data_dir: data/eduqg/splits/defaults
+task_dir: data/eduqg/tasks
+output_dir: output/eduqg_tk_instruct_3b_peft
+overwrite_output_dir: True
+# cache_dir: ./cache/
+overwrite_cache: True
+per_device_train_batch_size: 4
+per_device_eval_batch_size: 2
+gradient_accumulation_steps: 1
+learning_rate: 5.0e-5
+num_train_epochs: 3
+lr_scheduler_type: constant
+warmup_steps: 0
+logging_strategy: steps
+logging_steps: 500
+evaluation_strategy: "no"
+save_strategy: steps
+save_steps: 2500
+bf16: True

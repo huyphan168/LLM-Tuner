@@ -22,6 +22,9 @@ class MetaArguments:
     training_argument: Optional[str] = field(
         default=None, metadata={"help": "training arguments"}
     )
+    peft: Optional[bool] = field(
+        default=False, metadata={"help": "Using parameter efficient fine-tuning not not"}   
+    )
 
 
 def build_arguments(config):

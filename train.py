@@ -29,6 +29,8 @@ from essai.arguments import build_arguments
 from essai.dataset import build_dataset
 from essai.trainer import build_trainer
 
+from peft import get_peft_config, get_peft_model, LoraConfig, TaskType
+
 # set_progress_bar_enabled(False)
 datasets.logging.disable_progress_bar
 logger = logging.getLogger(__name__)
@@ -116,6 +118,12 @@ def main():
         revision=model_args.model_revision,
         use_auth_token=True if model_args.use_auth_token else None,
     )
+    if meta_args.peft:
+        peft_config = LoraConfig(
+            task_type=TaskType.SEQ_2_SEQ_LM, inference_mode=False, r=8, lora_alpha=32, lora_dropout=0.1
+        )
+        model = get_peft_model(model, peft_config)
+        model.print_trainable_parameters()
 
     model.resize_token_embeddings(len(tokenizer))
 
