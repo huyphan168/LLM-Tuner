@@ -10,7 +10,7 @@ import json
 from omegaconf import OmegaConf
 
 import datasets
-import nltk  # Here to have a nice missing dependency error message early on
+import nltk  
 import numpy as np
 
 import transformers
@@ -124,6 +124,9 @@ def main():
         )
         model = get_peft_model(model, peft_config)
         model.print_trainable_parameters()
+    
+    model = 
+    torch.compile(model)
 
     model.resize_token_embeddings(len(tokenizer))
 

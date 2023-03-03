@@ -1,4 +1,4 @@
-# Distributed Finetuning for Human-centered Writing Assistant
+# Distributed Finetuning for Education
 LehrerAI Language Model Team
 
 ## To do:
@@ -6,15 +6,27 @@ LehrerAI Language Model Team
 - [x] Refactor `essai/train.py` to disengage arguments, Natural Instruction code Interaction for universality (include GPT-like or OPT models) steps: <Trainer, Dataset, Arguments(use Config instead)>
 - [x] Refactor `essai/trainer` to include more training code
 - [ ] Implement Flan-T5, GPT-like models fine-tuning code
-- [ ] Collect data from books `essai/datasets/vspace_ielts/collect_books.py`
+- [ ] Collect data from books 
 - [ ] Implement Triton fused kernel + torch.compile
 
 ## Installation
-Current version of implementation has tested with pytorch 2.0 but it should work with pytorch > 1.0.0. To install all dependencies, just run.
-```
-python3 -r requirements.txt
-```
+Current version of implementation has tested with pytorch 2.0 nightly but it should work with pytorch > 1.0.0. To install dependencies, just run.
 
+```
+conda env create --file=environment.yaml
+```
+Notes that the installation of deepspeed might encounter multiple errors, the most common one is `fused_adam` optimizer in deepspeed needs to be compiled by CUDA toolkit that has the same version with binary
+cuda that attached with pytorch. For example, the cuda version of pytorch is 11.7 then the CUDA toolkit to be installed will have version of 11.7. We can manually install CUDA toolkit by instruction of NVIDIA. 
+However, we can install the toolkit via cuda easily by
+```
+conda install cuda -c nvidia/label/cuda-11.7.0
+```
+Other errors related to compilation can be addressed by aliasing the .so file of cuda in conda environment folder to the shared folder such as `/usr/local/lib`. You can check whether the compilation is successful or not:
+```
+python3 make_cpuadam.py
+```
+If the compilation need file cuda profiler since your toolkit does not have it. You can copy paste `cuda_profiler_api.h` to `/usr/local/your_cuda/include`.
+Other erros like `cannot import inf from torch._six`, please see https://github.com/microsoft/DeepSpeed/pull/2863
 ## Usage
 Essai is modular and flexible. It is easy to add new tasks, models, and algorithms. On top of different repo or codebase of different algorithms is Meta Essai Configs to choose which algorithm to use.
 
@@ -39,9 +51,18 @@ save_steps: 2500
 bf16: True
 ...
 ```
-To reconstruct the results in Tk-instruct, just run
+To reconstruct the results in Tk-instruct of EduQG on both tasks `question generation` and `options generation, we first to format the original dataset EduQG to follow instruction + input -> output format of Tk-instruct
+```bash
+python3 data/eduqg/prepare_eduqg_instruct.py
 ```
-deepspeed --master_port $(shuf -i25000-30000 -n1) essai/train.py essau/configs/t5_instruct_3b.yaml
+This will generate data in folder of `data/eduqg/tasks/`, for this case we have two tasks. The folder `data/eduqg/splits/defaults` will split which tasks and files will be evaluated on. After generating the data, we can fine-tune `Tk-instruct 3B` on
+our dataset by running:
+```bash
+deepspeed train.py essai/configs/t5_instruct_3b_qog_pos.yaml
+```
+To test ability of the model, please edit the prompt according to the data format mentioned in `data/eduqg/prepare_eduqg_instruct.py` and run this file with your checkpoint
+```bash
+python3 test_deepspeed.py
 ```
 ## Code Files
 This repository provides the following Folders and Files
@@ -54,11 +75,24 @@ This repository provides the following Folders and Files
   - `trainers`: The folder for the trainer files for different algorithms
   - `inference`: The folder for the inference server using EnergonAI + Quantization Strategies
   - `ds_configs`: The folder for the deepspeed configuration files
-  - `train.py`: The main file for training
 - `notebooks`: The folder for the notebooks
 - `scripts`: The folder for the bash scripts
 - `requirements.txt`: The file for the dependencies
 - `README.md`: The file for the README
+- `train.py`: The main file for training
+
+## Result on EduQG two tasks
+I will denote `QG` for question generation task given passage and answer, `Opt` for options generation given question, passage and answers. And QOG for generating full multi-choices question.
+I found that by seperating the QOG into 2 tasks and train them together boost the performance further. This might be due to the complexity of unified tasks (future can be address by Hindsight Relabling Instruction Tuning)
+| Method | Tasks | rougeL | rouge1 |
+| --- | --- | --- | --- |
+| Tk-instruct Large | QOG | 33.3 | 37.34 |
+| Tk-instruct 3B  | QOG | 32.49 | 36.7 |
+| Tk-instruct 3B Def+Pos | QG | 43.48 | 48.36 | 
+| Tk-instruct 3B Def+Pos Muti-tasks | QG | 43.79 | 48.58 |
+| Tk-instruct 3B Def+Pos Muti-tasks | Opt | 45.92 | 51.24 |
+
+
 ## Citation
 ```bibtex
 @misc{https://doi.org/10.48550/arxiv.2204.07705,

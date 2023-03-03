@@ -9,4 +9,4 @@ module load opence
 conda activate mmpose
 cd /home/huypn168/Essai
 
-deepspeed train.py essai/configs/t5_instruct_3b.yaml
+deepspeed train.py essai/configs/t5_instruct_3b_qg.yaml

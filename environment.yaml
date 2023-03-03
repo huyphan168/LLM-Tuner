@@ -1,0 +1,25 @@
+name: essai-cuda
+channels:
+  - conda-forge
+  - pytorch-nightly 
+  - nvidia
+  # - nvidia/label/cuda-11.5.0
+dependencies:
+  - python=3.11
+  - pytorch
+  - torchvision
+  - torchaudio 
+  - pytorch-cuda=11.7
+  - cuda
+  - tqdm
+  - pip
+  - pip:
+    - deepspeed
+    - accelerate
+    - sentencepiece
+    - transformers
+    - datasets
+    - nltk
+    - openai
+    - rouge-score
+    - peft
