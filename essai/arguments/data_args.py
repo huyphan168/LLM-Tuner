@@ -126,7 +126,8 @@ class NIDataArguments:
     def __post_init__(self):
         pass
 
-class EduQGDArguments:
+@dataclass
+class FlanDataArguments:
     """
     Arguments pertaining to what data we are going to input our model for training and eval.
     """
@@ -173,3 +174,60 @@ class EduQGDArguments:
             "value if set."
         },
     )
+    max_eval_samples: Optional[int] = field(
+        default=None,
+        metadata={
+            "help": "For debugging purposes or quicker training, truncate the number of evaluation examples to this "
+            "value if set."
+        },
+    )
+    max_predict_samples: Optional[int] = field(
+        default=None,
+        metadata={
+            "help": "For debugging purposes or quicker training, truncate the number of prediction examples to this "
+            "value if set."
+        },
+    )
+    num_beams: Optional[int] = field(
+        default=None,
+        metadata={
+            "help": "Number of beams to use for evaluation. This argument will be passed to ``model.generate``, "
+            "which is used during ``evaluate`` and ``predict``."
+        },
+    )
+    ignore_pad_token_for_loss: bool = field(
+        default=True,
+        metadata={
+            "help": "Whether to ignore the tokens corresponding to padded labels in the loss computation or not."
+        },
+    )
+    source_prefix: Optional[str] = field(
+        default="", metadata={"help": "A prefix to add before every source text (useful for T5 models)."}
+    )
+
+    forced_bos_token: Optional[str] = field(
+        default=None,
+        metadata={
+            "help": "The token to force as the first generated token after the decoder_start_token_id."
+            "Useful for multilingual models like mBART where the first generated token"
+            "needs to be the target language token (Usually it is the target language token)"
+        },
+    )
+    add_few_shots: bool = field(
+        default=False,
+        metadata={
+            "help": "Whether to use few-shot prompt in Flan style"
+        }
+    )
+    num_shots: Optional[int] = field(
+        default=2,
+        metadata={
+            "help": "Number of examples for examplar few-shot prompting"
+        }
+    )
+    data_file: Optional[str] = field(
+        default=None, metadata={"help": "data file containing implementation of the data class"}
+    )
+    
+    def __post_init__(self):
+        pass

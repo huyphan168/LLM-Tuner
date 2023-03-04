@@ -19,7 +19,7 @@ generation_max_length: 256
 data_file: "essai/dataset/natural_instructions/ni_dataset.py"
 data_dir: data/eduqg/splits/defaults
 task_dir: data/eduqg/tasks
-output_dir: output/eduqg_tk_instruct_3b_pos_question_options
+output_dir: output/eduqg_tk_instruct_3b_pos_question_options_compile
 overwrite_output_dir: True
 add_task_name: False
 add_task_definition: True

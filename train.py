@@ -12,6 +12,7 @@ from omegaconf import OmegaConf
 import datasets
 import nltk  
 import numpy as np
+import torch
 
 import transformers
 from filelock import FileLock
@@ -125,8 +126,13 @@ def main():
         model = get_peft_model(model, peft_config)
         model.print_trainable_parameters()
     
-    model = 
-    torch.compile(model)
+    #check python version
+    if sys.version_info < (3,11):
+        model = torch.compile(model)
+    else:
+        logger.info(
+            f"Your python version is {sys.version_info}. Meanwhile, torch.compile function is only supported for < 3.11 version"
+        )
 
     model.resize_token_embeddings(len(tokenizer))
 

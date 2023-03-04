@@ -32,6 +32,8 @@ def build_arguments(config):
         model_args = NIModelArguments
     if config.dataset_argument == "NI":
         data_args = NIDataArguments
+    elif config.dataset_argument == "Flan":
+        data_args = FlanDataArguments
     if config.training_argument == "NI":
         training_args = NITrainingArguments
     return model_args, data_args, training_args, MetaArguments

@@ -1,6 +1,6 @@
 # Distributed Finetuning for Education
 LehrerAI Language Model Team
-
+---
 ## To do:
 - [x] Refactor Tk-instruct code
 - [x] Refactor `essai/train.py` to disengage arguments, Natural Instruction code Interaction for universality (include GPT-like or OPT models) steps: <Trainer, Dataset, Arguments(use Config instead)>
@@ -8,7 +8,7 @@ LehrerAI Language Model Team
 - [ ] Implement Flan-T5, GPT-like models fine-tuning code
 - [ ] Collect data from books 
 - [ ] Implement Triton fused kernel + torch.compile
-
+---
 ## Installation
 Current version of implementation has tested with pytorch 2.0 nightly but it should work with pytorch > 1.0.0. To install dependencies, just run.
 
@@ -26,7 +26,9 @@ Other errors related to compilation can be addressed by aliasing the .so file of
 python3 make_cpuadam.py
 ```
 If the compilation need file cuda profiler since your toolkit does not have it. You can copy paste `cuda_profiler_api.h` to `/usr/local/your_cuda/include`.
-Other erros like `cannot import inf from torch._six`, please see https://github.com/microsoft/DeepSpeed/pull/2863
+Other erros like `cannot import inf from torch._six`, please see https://github.com/microsoft/DeepSpeed/pull/2863.
+
+---
 ## Usage
 Essai is modular and flexible. It is easy to add new tasks, models, and algorithms. On top of different repo or codebase of different algorithms is Meta Essai Configs to choose which algorithm to use.
 
@@ -64,6 +66,8 @@ To test ability of the model, please edit the prompt according to the data forma
 ```bash
 python3 test_deepspeed.py
 ```
+
+---
 ## Code Files
 This repository provides the following Folders and Files
 - `essai`: The main folder for the codebase
@@ -81,6 +85,19 @@ This repository provides the following Folders and Files
 - `README.md`: The file for the README
 - `train.py`: The main file for training
 
+## Extend the Library to other instructions
+ - `essai/arguments`:  By adding your algorithm's arguments
+    - `data_args.py`: add data arguments
+    - `model_args.py`: add model arguments
+    - `training_args.py`: add training arguments for trainer.
+ - `essai/configs/t5_flan_xl_qog_pos.yaml`: add configuration for training
+ - `essai/dataset/flan`: add new dataset format for tuning
+    - `flan_collator.py`
+    - `flan_dataset.py`
+ - `essai/trainer/flan_trainer.py`: add trainer representing your algorithm
+
+---
+
 ## Result on EduQG two tasks
 I will denote `QG` for question generation task given passage and answer, `Opt` for options generation given question, passage and answers. And QOG for generating full multi-choices question.
 I found that by seperating the QOG into 2 tasks and train them together boost the performance further. This might be due to the complexity of unified tasks (future can be address by Hindsight Relabling Instruction Tuning)
@@ -92,7 +109,7 @@ I found that by seperating the QOG into 2 tasks and train them together boost th
 | Tk-instruct 3B Def+Pos Muti-tasks | QG | 43.79 | 48.58 |
 | Tk-instruct 3B Def+Pos Muti-tasks | Opt | 45.92 | 51.24 |
 
-
+----
 ## Citation
 ```bibtex
 @misc{https://doi.org/10.48550/arxiv.2204.07705,

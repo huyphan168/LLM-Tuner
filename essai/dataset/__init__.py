@@ -31,7 +31,7 @@ def build_dataset(config, tokenizer, data_args, training_args, model_args, model
             max_num_instances_per_task=data_args.max_num_instances_per_task,
             max_num_instances_per_eval_task=data_args.max_num_instances_per_eval_task
         )
-    elif config.dataset_argument == "NLG":
+    elif config.dataset_argument == "Flan":
         data_collator = DataCollatorForFlan(
                         tokenizer,
                         model=model,
@@ -39,12 +39,8 @@ def build_dataset(config, tokenizer, data_args, training_args, model_args, model
                         max_source_length=data_args.max_source_length,
                         max_target_length=data_args.max_target_length,
                         pad_to_multiple_of=8 if training_args.fp16 else None,
-                        add_task_name=data_args.add_task_name,
-                        add_task_definition=data_args.add_task_definition,
-                        num_pos_examples=data_args.num_pos_examples,
-                        num_neg_examples=data_args.num_neg_examples,
-                        add_explanation=data_args.add_explanation,
-                        tk_instruct=data_args.tk_instruct
+                        add_few_shots=data_args.add_few_shots,
+                        num_shots=data_args.num_shots
         )
         raw_datasets = load_dataset(
             data_args.data_file, 

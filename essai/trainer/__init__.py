@@ -24,7 +24,7 @@ def build_trainer(config, model, training_args, train_dataset, eval_dataset, tok
                     for example, pred in zip(dataset, decoded_preds):
                         fout.write(json.dumps({
                             "Task": example["Task"],
-                            "Definition": example["Definition"],
+                            # "Definition": example["Definition"],
                             "Instance": example["Instance"],
                             "Prediction": pred
                         }) + "\n")

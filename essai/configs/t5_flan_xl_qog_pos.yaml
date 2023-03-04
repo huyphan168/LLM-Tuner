@@ -1,0 +1,39 @@
+## Meta Configs for Essai
+name: flan-t5-xl
+description: T5 model with instructive prompts in Flan style
+model_argument: NI
+dataset_argument: Flan
+training_argument: NI
+## Huggingface Configs
+run_name: flan-t5-experiment-eduqog-pos
+deepspeed: essai/ds_configs/stage3.config
+do_train: True
+do_predict: True
+do_eval: True
+predict_with_generate: True
+model_name_or_path: google/flan-t5-xl
+max_source_length: 512
+max_target_length: 128
+generation_max_length: 128
+data_file: "essai/dataset/flan/flan_dataset.py"
+data_dir: data/eduqg/splits/defaults
+task_dir: data/eduqg/flan_tasks
+output_dir: output/eduqg_flan_t5_xl_few_shots_question_options
+overwrite_output_dir: True
+add_few_shots: True
+num_shots: 1
+overwrite_cache: True
+per_device_train_batch_size: 2
+per_device_eval_batch_size: 2
+gradient_accumulation_steps: 3
+learning_rate: 1.0e-4
+num_train_epochs: 2
+lr_scheduler_type: constant
+warmup_steps: 100
+logging_strategy: steps
+logging_steps: 1
+evaluation_strategy: "steps"
+eval_steps: 300
+save_strategy: steps
+save_steps: 100
+bf16: True
