@@ -5,9 +5,12 @@ LehrerAI Language Model Team
 - [x] Refactor Tk-instruct code
 - [x] Refactor `essai/train.py` to disengage arguments, Natural Instruction code Interaction for universality (include GPT-like or OPT models) steps: <Trainer, Dataset, Arguments(use Config instead)>
 - [x] Refactor `essai/trainer` to include more training code
-- [ ] Implement Flan-T5, GPT-like models fine-tuning code
+- [x] Implement Flan-T5 models fine-tuning code
+- [x] Implement LLaMa, GPT-J fine-tuning code
+- [ ] Implement Flash Attention for T5
+- [ ] Implement fused kernel with backward implementation [FasterTransformer](https://github.com/NVIDIA/FasterTransformer/blob/main/src/fastertransformer/models/t5/T5Decoder.cc)
+- [ ] Implement [Hindsight Relabling Instruction Tuning](https://github.com/tianjunz/HIR/blob/main/online_sampler.py)
 - [ ] Collect data from books 
-- [ ] Implement Triton fused kernel + torch.compile
 ---
 ## Installation
 Current version of implementation has tested with pytorch 2.0 nightly but it should work with pytorch > 1.0.0. To install dependencies, just run.
@@ -60,7 +63,7 @@ python3 data/eduqg/prepare_eduqg_instruct.py
 This will generate data in folder of `data/eduqg/tasks/`, for this case we have two tasks. The folder `data/eduqg/splits/defaults` will split which tasks and files will be evaluated on. After generating the data, we can fine-tune `Tk-instruct 3B` on
 our dataset by running:
 ```bash
-deepspeed train.py essai/configs/t5_instruct_3b_qog_pos.yaml
+deepspeed train.py configs/t5_instruct_3b_qog_pos.yaml
 ```
 To test ability of the model, please edit the prompt according to the data format mentioned in `data/eduqg/prepare_eduqg_instruct.py` and run this file with your checkpoint
 ```bash
@@ -70,9 +73,9 @@ python3 test_deepspeed.py
 ---
 ## Code Files
 This repository provides the following Folders and Files
+- `configs`: The folder for the configuration files
 - `essai`: The main folder for the codebase
   - `arguments`: The folder for the arguments classes
-  - `configs`: The folder for the configuration files
   - `datasets`: The folder for the dataset Folders
     - `natural_instructions`: The folder for the Natural Instruction dataset
     - `vspace_ielts`: The folder for the Vspace IELTS dataset
