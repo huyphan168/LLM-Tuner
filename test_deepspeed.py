@@ -6,7 +6,7 @@ from transformers import pipeline
 
 local_rank = int(os.getenv('LOCAL_RANK', '0'))
 world_size = int(os.getenv('WORLD_SIZE', '4'))
-generator = pipeline('text2text-generation', model="output/eduqg_tk_instruct_3b_pos_question_options/checkpoint-300")
+generator = pipeline('text2text-generation', model="allenai/tk-instruct-3b-def-pos")
 
 
 

@@ -5,7 +5,7 @@ model_argument: NI
 dataset_argument: NI
 training_argument: NI
 ## Huggingface Configs
-run_name: tk-instruct-experiment-eduqog-pos
+run_name: tk-instruct-experiment-eduqogp
 deepspeed: essai/ds_configs/stage3.config
 do_train: True
 do_predict: True
@@ -19,7 +19,7 @@ generation_max_length: 256
 data_file: "essai/dataset/natural_instructions/ni_dataset.py"
 data_dir: data/eduqg/splits/defaults
 task_dir: data/eduqg/tasks
-output_dir: output/eduqg_tk_instruct_3b_pos_question_options_compile
+output_dir: output/eduqg_tk_instruct_3b_qogp
 overwrite_output_dir: True
 add_task_name: False
 add_task_definition: True
@@ -39,7 +39,7 @@ warmup_steps: 100
 logging_strategy: steps
 logging_steps: 1
 evaluation_strategy: "steps"
-eval_steps: 100
+eval_steps: 150
 save_strategy: steps
 save_steps: 100
 bf16: True

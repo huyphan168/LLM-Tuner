@@ -4,7 +4,7 @@ from transformers.trainer_seq2seq import Seq2SeqTrainer
 from transformers.trainer import *
 from datasets import load_metric
 from transformers.trainer_callback import TrainerCallback
-
+from peft import PeftModel
 
 class DenserEvalCallback(TrainerCallback):
 
@@ -267,10 +267,17 @@ class NITrainer(Seq2SeqTrainer):
         else:
             generation_inputs = inputs[self.model.main_input_name]
 
-        generated_tokens = self.model.generate(
-            generation_inputs,
-            **gen_kwargs,
-        )
+        if isinstance(self.model, PeftModel):
+            gen_kwargs["input_ids"] = generation_inputs
+            generated_tokens = self.model.generate(
+                **gen_kwargs,
+            )
+        else:
+            generated_tokens = self.model.generate(
+                generation_inputs,
+                **gen_kwargs
+            )
+            
         # in case the batch is shorter than max length, the output should be padded
         if generated_tokens.shape[-1] < gen_kwargs["max_length"]:
             generated_tokens = self._pad_tensors_to_max_len(generated_tokens, gen_kwargs["max_length"])
